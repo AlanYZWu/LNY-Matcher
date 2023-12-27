@@ -104,4 +104,7 @@ while (x <= 30) {
 availability_score = availability_score / 58
 
 # Create output excel file
-write.xlsx(availability_score, file = "Availability Scores.xlsx", sheetName = "Sheet1")
+write.xlsx(availability_score,
+           file = "Availability Scores.xlsx",
+           sheetName = "Sheet1",
+           rowNames = TRUE)
