@@ -32,13 +32,11 @@ availability_score = availability_score[1:30,]
 availability_score[] = 0
 rownames(availability_score) = colnames(availability_score)
 
-colin = 1
 # Loop through each gig
 for (row in 1:nrow(plpanda_lny)) {
   # Loop through each troupe member
   for (member in 1:ncol(plpanda_lny)) {
     # Set answer for current member
-    
     if (plpanda_lny[row, member] == "") {
       member_answer = "n"
     } else if (startsWith(tolower(plpanda_lny[row, member]), "y") || 
@@ -57,8 +55,8 @@ for (row in 1:nrow(plpanda_lny)) {
 
     
     for (col in 1:ncol(plpanda_lny)) {
-      if (plpanda_lny[row, member] == "") {
-        member_answer = "n"
+      if (plpanda_lny[row, col] == "") {
+        other_answer = "n"
       } else if (startsWith(tolower(plpanda_lny[row, col]), "y") || 
           grepl("yes", tolower(plpanda_lny[row, col])) ||
           grepl("free", tolower(plpanda_lny[row, col]))) {
@@ -67,7 +65,7 @@ for (row in 1:nrow(plpanda_lny)) {
                  grepl("maybe", tolower(plpanda_lny[row, col]))) {
         other_answer = "m"
       } else if (grepl("after", tolower(plpanda_lny[row, col]))) {
-        member_answer = "y"
+        other_answer = "y"
       } else {
         other_answer = "n"
       }
@@ -87,7 +85,6 @@ for (row in 1:nrow(plpanda_lny)) {
         score = 0
       }
       
-      availability_score[member, col] = availability_score[member, col] + score
       availability_score[col, member] = availability_score[col, member] + score
     }
   }
@@ -95,13 +92,13 @@ for (row in 1:nrow(plpanda_lny)) {
 
 # Set diagonal to N/A
 x = 1
-while (x <= 30) {
+while (x <= nrow(availability_score)) {
   availability_score[x, x] = NA
   x = x + 1
 }
 
 # Set values to percentage
-availability_score = availability_score / 58
+availability_score = availability_score / nrow(plpanda_lny)
 
 # Create output excel file
 write.xlsx(availability_score,
